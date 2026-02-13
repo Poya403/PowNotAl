@@ -7,7 +7,7 @@ Future<String> improveRequest({
   required String title,
   required String content,
 }) async {
-  final url = Uri.parse('https://notepowaibackend-at12yuxm5-poya-aminis-projects.vercel.app/api/index');
+  final url = Uri.parse('https://note-pow-al-back-end.vercel.app/api/index');
   final prompt = AppTexts.prompt(form, title, content);
 
   final response = await http.post(
