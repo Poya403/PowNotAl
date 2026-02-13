@@ -1,0 +1,37 @@
+name: pow_note_ai
+description: "Power Note AI Application"
+
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  provider: ^6.0.5
+  shared_preferences: ^2.0.15
+  http: ^0.13.5
+  shamsi_date: ^1.1.0
+  connectivity_plus: ^4.0.0
+  sqflite: ^2.2.0
+  sqflite_common_ffi: ^2.3.0
+  path: ^1.8.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^5.0.0
+
+flutter:
+
+  uses-material-design: true
+  fonts:
+    - family: FarsiFonts
+      fonts:
+        - asset: fonts/BKoodakBold.ttf
+          style: normal
