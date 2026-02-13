@@ -5,25 +5,15 @@ import 'package:pow_note_ai/utils/app_texts.dart';
 Future<String> improveRequest({
   required String form,
   required String title,
-  required String content
+  required String content,
 }) async {
-  final apiKey = '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';
-  final url = Uri.parse('https://openrouter.ai/api/v1/completions');
-
+  final url = Uri.parse('https://notepowaibackend-at12yuxm5-poya-aminis-projects.vercel.app/api/index');
   final prompt = AppTexts.prompt(form, title, content);
 
   final response = await http.post(
     url,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $apiKey',
-    },
-    body: jsonEncode({
-      "model": "gpt-3.5-turbo",
-      "prompt": prompt,
-      "temperature": 0.7,
-      "max_tokens": 500,
-    }),
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({'prompt': prompt}),
   );
 
   if (response.statusCode == 200) {
