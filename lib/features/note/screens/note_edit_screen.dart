@@ -73,16 +73,17 @@ class _NoteEditScreenState extends State<NoteEditScreen> {
   }
 
   bool get hasChanged {
-    if (editingNote == null) {
-      return titleController.text.isNotEmpty &&
-          contentController.text.isNotEmpty;
-    } else {
-      return (titleController.text != editingNote!.title ||
-          contentController.text != editingNote!.content) &&
-          (titleController.text.isNotEmpty &&
-              contentController.text.isNotEmpty);
-    }
+    final isNotEmpty = titleController.text.trim().isNotEmpty &&
+        contentController.text.trim().isNotEmpty;
+
+    if (editingNote == null) return isNotEmpty;
+
+    final isModified = titleController.text.trim() != editingNote!.title ||
+        contentController.text.trim() != editingNote!.content;
+
+    return isModified && isNotEmpty;
   }
+
 
   void _saveNote() async {
     final noteProvider = context.read<NoteProvider>();
