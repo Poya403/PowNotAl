@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:pow_note_ai/features/note/extentions/note_extentions.dart';
 import 'package:pow_note_ai/utils/app_radius.dart';
 import 'package:pow_note_ai/widgets/text_fields/custom_text_field.dart';
 import 'package:pow_note_ai/utils/app_texts.dart';
 import 'package:pow_note_ai/utils/app_spacing.dart';
 import '../models/note_model.dart';
 import '../screens/note_enhancer_screen.dart';
+import 'package:pow_note_ai/features/note/providers/note_provider.dart';
 import 'package:provider/provider.dart';
-import '../../../features/note/providers/note_provider.dart';
 
-class EditNoteForm extends StatefulWidget {
-  const EditNoteForm({super.key});
+class NoteEditScreen extends StatefulWidget {
+  const NoteEditScreen({super.key});
 
   @override
-  State<EditNoteForm> createState() => _EditNoteFormState();
+  State<NoteEditScreen> createState() => _NoteEditScreenState();
 }
 
-class _EditNoteFormState extends State<EditNoteForm> {
+class _NoteEditScreenState extends State<NoteEditScreen> {
   TextEditingController titleController = TextEditingController();
   TextEditingController contentController = TextEditingController();
   Note? editingNote;
-  late bool isReadOnly;
 
   @override
   void initState() {
@@ -54,7 +52,6 @@ class _EditNoteFormState extends State<EditNoteForm> {
     if (args == null) return;
 
     editingNote = args['note'] as Note?;
-    isReadOnly = args['isReadOnly'] ?? false;
   }
 
   void _initializeFields() {
@@ -66,12 +63,9 @@ class _EditNoteFormState extends State<EditNoteForm> {
       contentController.clear();
     }
   }
-  void _toggleReadOnly() => setState(() => isReadOnly = !isReadOnly);
 
   String get _pageTitle {
-    if (isReadOnly) {
-      return '';
-    } else if (editingNote != null) {
+    if (editingNote != null) {
       return AppTexts.editNote;
     } else {
       return AppTexts.addNote;
@@ -88,8 +82,19 @@ class _EditNoteFormState extends State<EditNoteForm> {
     }
   }
 
-  bool get isFieldsNotEmpty =>
-      (titleController.text.isNotEmpty && contentController.text.isNotEmpty);
+  void _saveNote() async {
+    final noteProvider = context.read<NoteProvider>();
+    await noteProvider.saveNote(Note(
+      id: editingNote?.id,
+      title: titleController.text.trim(),
+      content: contentController.text.trim(),
+      createdDate: DateTime.now().toIso8601String(),
+    ));
+
+    if (context.mounted) {
+      Navigator.pop(context, editingNote?.id);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,48 +102,41 @@ class _EditNoteFormState extends State<EditNoteForm> {
       appBar: AppBar(title: Text(_pageTitle), centerTitle: true),
       body: SingleChildScrollView(
         child: Center(
-          child: SafeArea(
-            top: true,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                NoteEnhancerScreen(
-                  isExpanded: !isReadOnly,
-                  titleController: titleController,
-                  contentController: contentController,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AppSpacing.height20,
+              CustomTextField(
+                controller: titleController,
+                labelText: AppTexts.title,
+                suffixIcon: IconButton(
+                  onPressed: () => titleController.clear(),
+                  icon: Icon(Icons.cancel_outlined),
                 ),
-                AppSpacing.height30,
-                CustomTextField(
-                  controller: titleController,
-                  labelText: AppTexts.title,
-                  prefixIcon: Icon(Icons.title_outlined),
-                  readOnly: isReadOnly,
-                ),
-                AppSpacing.height20,
-                SingleChildScrollView(
-                  child: CustomTextField(
-                    controller: contentController,
-                    labelText: isReadOnly ? AppTexts.text : AppTexts.enterText,
-                    maxLines: null,
-                    minLines: isReadOnly ? 3 : 10,
-                    keyboardType: TextInputType.multiline,
-                    prefixIcon: Icon(Icons.description),
-                    suffixIcon: IconButton(
-                      onPressed: () => contentController.clear(),
-                      icon: Icon(Icons.cancel_outlined),
-                    ),
-                    readOnly: isReadOnly,
+              ),
+              AppSpacing.height20,
+              SingleChildScrollView(
+                child: CustomTextField(
+                  controller: contentController,
+                  labelText: AppTexts.enterText,
+                  maxLines: null,
+                  minLines: 8,
+                  keyboardType: TextInputType.multiline,
+                  suffixIcon: IconButton(
+                    onPressed: () => contentController.clear(),
+                    icon: Icon(Icons.cancel_outlined),
                   ),
                 ),
-                if(editingNote != null)
-                  CustomButton(
-                    title: isReadOnly ? AppTexts.editNote : AppTexts.close,
-                    onPressed: _toggleReadOnly,
-                  ),
-                if (!isReadOnly) ...[_buildEditButtons()],
-              ],
-            ),
+              ),
+              AppSpacing.height20,
+              NoteEnhancerScreen(
+                titleController: titleController,
+                contentController: contentController,
+              ),
+              AppSpacing.height30,
+              _buildEditButtons()
+            ],
           ),
         ),
       ),
@@ -150,12 +148,7 @@ class _EditNoteFormState extends State<EditNoteForm> {
     final buttons = [
       CustomButton(
         title: AppTexts.save,
-        onPressed: Note(
-          id: editingNote?.id,
-          title: titleController.text.trim(),
-          content: contentController.text.trim(),
-          createdDate: DateTime.now().toIso8601String(),
-        ).saveNote(context),
+        onPressed: hasChanged ? _saveNote : null,
       ),
       const SizedBox(width: 10, height: 10),
       CustomButton(
@@ -174,7 +167,7 @@ class _EditNoteFormState extends State<EditNoteForm> {
 class CustomButton extends StatelessWidget {
   final String title;
   final bool enabled;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final Color? backgroundColor;
 
   const CustomButton({

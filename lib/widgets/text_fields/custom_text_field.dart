@@ -59,16 +59,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
             decoration: InputDecoration(
               labelText: widget.labelText,
               border: OutlineInputBorder(),
-              prefixIcon: widget.readOnly ? null : widget.prefixIcon,
-              suffixIcon: widget.readOnly ? null : widget.suffixIcon,
-              prefixIconConstraints: BoxConstraints(
-                minHeight: 0,
-                minWidth: 48,
-              ),
-              suffixIconConstraints: BoxConstraints(
-                minHeight: 0,
-                minWidth: 48,
-              ),
+              prefix: widget.prefixIcon,
+              suffix: widget.suffixIcon,
               alignLabelWithHint: true,
               filled: true,
               fillColor: widget.readOnly

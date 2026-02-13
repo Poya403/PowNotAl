@@ -54,12 +54,12 @@ class _NoteEnhancerScreenState extends State<NoteEnhancerScreen> {
             Center(
               child: SizedBox(
                 width: isDesktop
-                    ? MediaQuery.of(context).size.width * 0.3
-                    : MediaQuery.of(context).size.width * 0.8,
+                    ? MediaQuery.of(context).size.width * 0.5
+                    : MediaQuery.of(context).size.width * 0.85,
                 child: Card(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8)),
-                  elevation: 3,
+                  elevation: 0,
                   color: Colors.white,
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(32.0, 10.0, 32, 10.0),
@@ -127,8 +127,7 @@ class _NoteEnhancerScreenState extends State<NoteEnhancerScreen> {
                                             isLoadingNotifier.value = false;
                                           }
                                         }
-                                      }
-                                          : null,
+                                      } : null,
 
                                       style: ElevatedButton.styleFrom(
                                           padding: const EdgeInsets.symmetric(
