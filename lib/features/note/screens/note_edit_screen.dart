@@ -160,7 +160,7 @@ class _NoteEditScreenState extends State<NoteEditScreen> {
       CustomButton(
         title: AppTexts.clearChanges,
         onPressed: _initializeFields,
-        enabled: canSave,
+        enabled: isModified,
         backgroundColor: Colors.redAccent,
       ),
     ];

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:pow_note_ai/features/note/models/note_model.dart';
 import 'package:pow_note_ai/utils/app_radius.dart';
+import 'package:pow_note_ai/utils/app_spacing.dart';
 import 'package:pow_note_ai/utils/app_texts.dart';
 import 'package:provider/provider.dart';
 import 'package:pow_note_ai/features/note/providers/note_provider.dart';
 import 'package:collection/collection.dart';
+import 'package:pow_note_ai/services/share_services.dart';
 
 class NoteDetailScreen extends StatefulWidget {
   const NoteDetailScreen({super.key});
@@ -14,6 +16,7 @@ class NoteDetailScreen extends StatefulWidget {
 }
 
 class _NoteDetailScreenState extends State<NoteDetailScreen> {
+  ShareService shareService = ShareService();
   Note? note;
 
   @override
@@ -24,7 +27,10 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
 
   void _getArguments() {
     final args =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    ModalRoute
+        .of(context)
+        ?.settings
+        .arguments as Map<String, dynamic>?;
     if (args == null) return;
 
     final int noteId = args['noteId'];
@@ -35,40 +41,70 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDesktop = MediaQuery
+        .of(context)
+        .size
+        .width > 800;
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          tooltip: AppTexts.editNote,
-          shape: RoundedRectangleBorder(borderRadius: AppRadius.radius30),
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          onPressed: () => Navigator.pushNamed(
-            context,
-            '/note_edit',
-            arguments: {'note': note},
-          ),
-          child: const Icon(Icons.edit_outlined, color: Colors.white),
+        appBar: AppBar(
+          title: Text(note!.title),
+          centerTitle: true,
         ),
-        appBar: AppBar(title: Text(note!.title), centerTitle: true),
-        body: Align(
-          alignment: Alignment.topCenter,
-          child: FractionallySizedBox(
-            widthFactor: 0.8,
-            heightFactor: 0.8,
-            child: Card(
-              elevation: 3,
-              shape: RoundedRectangleBorder(borderRadius: AppRadius.radius16),
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: SingleChildScrollView(
-                  child: SelectableText(
-                    note!.content,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    textDirection: TextDirection.rtl,
+
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CustomButton(
+                onPressed: () =>
+                    Navigator.pushNamed(
+                      context,
+                      '/note_edit',
+                      arguments: {'note': note},
+                    ),
+                title: AppTexts.editNote,
+                icon: Icons.edit_outlined,
+              ),
+              AppSpacing.width24,
+              CustomButton(
+                onPressed: () => ShareService.shareNote(note!),
+                title: AppTexts.share,
+                icon: Icons.share_outlined,
+              ),
+            ],
+          ),
+        ),
+
+        body: Center(
+          child: Padding(
+            padding: EdgeInsets.all(isDesktop ? 30.0 : 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: Card(
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: AppRadius.radius16,
+                    ),
+                    color: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: SingleChildScrollView(
+                        child: SelectableText(
+                          note!.content,
+                          style: isDesktop ? Theme.of(context).textTheme.bodyLarge : Theme.of(context).textTheme.bodyMedium,
+                          textDirection: TextDirection.rtl,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
           ),
         ),
@@ -78,14 +114,16 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
 }
 
 class CustomButton extends StatelessWidget {
-  final String title;
+  final String? title;
+  final IconData? icon;
   final bool enabled;
   final VoidCallback onPressed;
   final Color? backgroundColor;
 
   const CustomButton({
     super.key,
-    required this.title,
+    this.icon,
+    this.title,
     required this.onPressed,
     this.backgroundColor,
     this.enabled = true,
@@ -97,19 +135,20 @@ class CustomButton extends StatelessWidget {
       margin: EdgeInsets.fromLTRB(10.0, 15.0, 0, 0),
       child: Padding(
         padding: const EdgeInsets.only(top: 8.0),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(borderRadius: AppRadius.radius6),
-            elevation: 3,
-            backgroundColor:
-                backgroundColor ?? Theme.of(context).colorScheme.primary,
-          ),
-          onPressed: enabled ? onPressed : null,
-          child: Text(
-            title,
-            style: Theme.of(
-              context,
-            ).textTheme.titleSmall?.copyWith(color: Colors.white),
+        child: Tooltip(
+          message: title ?? '',
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(borderRadius: AppRadius.radius30),
+              elevation: 0,
+              backgroundColor:
+                  backgroundColor ?? Theme.of(context).colorScheme.primary,
+            ),
+            onPressed: enabled ? onPressed : null,
+            child: Icon(
+              icon,
+              color: Colors.white,
+            )
           ),
         ),
       ),

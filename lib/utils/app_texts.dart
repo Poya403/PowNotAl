@@ -10,30 +10,10 @@ class AppTexts{
       محتوای متن: $content
       ''';
   }
-  //bmi page
-  static String bmiCalculator = 'BMI ' + 'محاسبه گر';
-  static String pleaseEnterFields = 'لطفا فیلد های زیر را پر کنید';
-  static String weight = 'وزن';
-  static String height = 'قد';
-
-  static String underWeight = 'کمبود وزن';
-  static String normalWeight = 'وزن نرمال';
-  static String overWeight = 'اضافه وزن';
-  static String obesity = 'چاق';
-  static String severeObesity = 'چاقی شدید';
 
   static String close = 'بستن';
-  static String calculate = 'محاسبه';
-  static String age = 'سن';
-  static String yourStatus = 'وضعیت ';
-  static String status = 'وضعیت';
-  static String inRangeOfUnderWeight = 'در مرز کم‌وزنی';
   static String noData = 'اطلاعاتی جهت نمایش وجود ندارد.';
-  static String gender = 'جنسیت';
-  // image editor
-  static String imageEditor = 'ادیت تصویر';
-  static String camera_screen = 'صفحه دوربین';
-  static String previewPage = 'پیش نمایش';
+
 
   // note text
   static String notes = 'یادداشت ها';
@@ -55,5 +35,9 @@ class AppTexts{
   static String enterText = 'متن یادداشت را وارد کنید...';
 
   static String menu = 'منو';
+
+  static String share = 'اشتراک گذاری';
+
+  static String areYouSure = 'آیا مطمئن هستید؟';
   // messagebox
 }
