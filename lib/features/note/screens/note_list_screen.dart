@@ -16,7 +16,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
   @override
   void initState() {
     super.initState();
-    loadNotes(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      loadNotes(context);
+    });
   }
 
   void loadNotes(BuildContext context) async {

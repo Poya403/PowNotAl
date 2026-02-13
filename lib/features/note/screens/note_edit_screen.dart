@@ -74,11 +74,13 @@ class _NoteEditScreenState extends State<NoteEditScreen> {
 
   bool get hasChanged {
     if (editingNote == null) {
-      return titleController.text.isNotEmpty ||
+      return titleController.text.isNotEmpty &&
           contentController.text.isNotEmpty;
     } else {
-      return titleController.text != editingNote!.title ||
-          contentController.text != editingNote!.content;
+      return (titleController.text != editingNote!.title ||
+          contentController.text != editingNote!.content) &&
+          (titleController.text.isNotEmpty &&
+              contentController.text.isNotEmpty);
     }
   }
 
@@ -148,7 +150,8 @@ class _NoteEditScreenState extends State<NoteEditScreen> {
     final buttons = [
       CustomButton(
         title: AppTexts.save,
-        onPressed: hasChanged ? _saveNote : null,
+        onPressed: _saveNote,
+        enabled: hasChanged,
       ),
       const SizedBox(width: 10, height: 10),
       CustomButton(
