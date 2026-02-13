@@ -72,19 +72,21 @@ class _NoteEditScreenState extends State<NoteEditScreen> {
     }
   }
 
-  bool get hasChanged {
+  bool get isModified {
+    return titleController.text.trim() != editingNote!.title ||
+        contentController.text.trim() != editingNote!.content;
+  }
+  
+  bool get canSave {
     final isNotEmpty = titleController.text.trim().isNotEmpty &&
         contentController.text.trim().isNotEmpty;
 
     if (editingNote == null) return isNotEmpty;
 
-    final isModified = titleController.text.trim() != editingNote!.title ||
-        contentController.text.trim() != editingNote!.content;
-
     return isModified && isNotEmpty;
   }
 
-
+  
   void _saveNote() async {
     final noteProvider = context.read<NoteProvider>();
     await noteProvider.saveNote(Note(
@@ -152,13 +154,13 @@ class _NoteEditScreenState extends State<NoteEditScreen> {
       CustomButton(
         title: AppTexts.save,
         onPressed: _saveNote,
-        enabled: hasChanged,
+        enabled: canSave,
       ),
       const SizedBox(width: 10, height: 10),
       CustomButton(
         title: AppTexts.clearChanges,
         onPressed: _initializeFields,
-        enabled: hasChanged,
+        enabled: canSave,
         backgroundColor: Colors.redAccent,
       ),
     ];
