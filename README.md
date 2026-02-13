@@ -1,16 +1,43 @@
-# pow_note_ai
+# Pow Note AI
 
-Power Note AI Application
+## 📌 Project Description
 
-## Getting Started
+**Pow Note AI** is a mobile application designed to help users create, improve, and manage administrative and organizational texts using artificial intelligence.
 
-This project is a starting point for a Flutter application.
+The application focuses on enhancing productivity by simplifying professional writing through AI-powered tools.
 
-A few resources to get you started if this is your first Flutter project:
+---
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## 🎯 Goal
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+The main goal of this project is to develop a practical AI-powered note application and publish it on Google Play Store.
+
+---
+
+## 🚀 Features
+
+- ✨ AI-powered text enhancement and rewriting  
+- 📝 Intelligent development of administrative and formal texts  
+- 📤 Note publishing and management  
+- 💾 Easy and secure backup system  
+- 🎨 Clean and user-friendly interface  
+
+---
+
+## 🛠️ Built With
+
+- Flutter  
+- Dart  
+- AI Integration  
+
+---
+
+## 📱 Platform
+
+- Android (Google Play Store – Coming Soon)
+
+---
+
+## 📌 Status
+
+🚧 Under Development
