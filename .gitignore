@@ -54,3 +54,8 @@ windows/flutter/ephemeral/
 # Misc
 .DS_Store
 Thumbs.db
+
+# Flutter auto-generated plugin files
+**/generated_plugin_registrant.cc
+**/generated_plugins_cmake
+**/GeneratedPluginRegistrant.swift

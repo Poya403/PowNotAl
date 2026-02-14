@@ -48,21 +48,48 @@ class _NoteEditScreenState extends State<NoteEditScreen> {
 
   void _getArguments() {
     final args =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     if (args == null) return;
 
-    editingNote = args['note'] as Note?;
+    final newEditingNote = args['note'] as Note?;
+
+    if (editingNote?.id != newEditingNote?.id) {
+      editingNote = newEditingNote;
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (editingNote != null) {
+          if (titleController.text.isEmpty) {
+            titleController.text = editingNote!.title;
+          }
+          if (contentController.text.isEmpty) {
+            contentController.text = editingNote!.content;
+          }
+        } else {
+          if (titleController.text.isEmpty) titleController.clear();
+          if (contentController.text.isEmpty) contentController.clear();
+        }
+      });
+    }
   }
+
 
   void _initializeFields() {
     if (editingNote != null) {
-      titleController.text = editingNote!.title;
-      contentController.text = editingNote!.content;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        titleController.text = editingNote!.title;
+        contentController.text = editingNote!.content;
+        contentController.selection = TextSelection.fromPosition(
+          TextPosition(offset: contentController.text.length),
+        );
+      });
     } else {
-      titleController.clear();
-      contentController.clear();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        titleController.clear();
+        contentController.clear();
+      });
     }
   }
+
 
   String get _pageTitle {
     if (editingNote != null) {
@@ -73,6 +100,7 @@ class _NoteEditScreenState extends State<NoteEditScreen> {
   }
 
   bool get isModified {
+    if (editingNote == null) return false;
     return titleController.text.trim() != editingNote!.title ||
         contentController.text.trim() != editingNote!.content;
   }
