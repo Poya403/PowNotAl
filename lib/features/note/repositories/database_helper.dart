@@ -27,7 +27,8 @@ class DatabaseHelper {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT,
             content TEXT,
-            created_date TEXT
+            created_date TEXT,
+            status TEXT DEFAULT 'untrash',
           )
         ''');
       },

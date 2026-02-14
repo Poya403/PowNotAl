@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pow_note_ai/core/navigation/menu.dart';
 import 'package:pow_note_ai/features/note/screens/note_list_screen.dart';
 import 'package:pow_note_ai/features/note/screens/note_edit_screen.dart';
+import 'package:pow_note_ai/features/note/screens/trash_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:pow_note_ai/features/note/providers/note_provider.dart';
 import 'package:pow_note_ai/features/note/screens/note_detail_screen.dart';
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
           home: MenuScreen(),
           routes: {
             '/notes' : (context) => const NoteListScreen(),
+            '/trash_list': (context) => const TrashScreen(),
             '/note_edit' : (context) => const NoteEditScreen(),
             '/note_view' : (context) => const NoteDetailScreen()
           }

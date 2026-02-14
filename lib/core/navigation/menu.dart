@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pow_note_ai/features/note/screens/note_list_screen.dart';
+import 'package:pow_note_ai/features/note/screens/trash_screen.dart';
 import 'package:pow_note_ai/utils/app_texts.dart';
 
 import '../../utils/app_radius.dart';
@@ -16,11 +17,13 @@ class _MenuScreenState extends State<MenuScreen> {
 
   final pages = [
     const NoteListScreen(),
+    const TrashScreen(),
     //  const SettingsScreen(),
   ];
 
   final titles = [
     AppTexts.notes,
+    AppTexts.trashList,
     //AppTexts.settings,
   ];
 
@@ -48,6 +51,14 @@ class _MenuScreenState extends State<MenuScreen> {
                 title: Text(AppTexts.notes),
                 onTap: () {
                   setState(() => selectedIndex = 0);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.restore_from_trash_rounded),
+                title: Text(AppTexts.trashList),
+                onTap: () {
+                  setState(() => selectedIndex = 1);
                   Navigator.pop(context);
                 },
               ),

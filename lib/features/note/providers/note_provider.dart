@@ -21,6 +21,12 @@ class NoteProvider with ChangeNotifier {
     _setLoading(false);
   }
 
+  Future<void> loadTrashList() async {
+    _setLoading(true);
+    _notes = await _repository.loadTrashList();
+    _setLoading(false);
+  }
+  
   Future<void> saveNote(Note note) async {
     _setLoading(true);
     await _repository.saveNote(note);
@@ -28,10 +34,24 @@ class NoteProvider with ChangeNotifier {
     _setLoading(false);
   }
 
+  Future<void> trashNote(int id) async {
+    _setLoading(true);
+    await _repository.trashNote(id);
+    await loadNotes();
+    _setLoading(false);
+  }
+
+  Future<void> unTrashNote(int id) async {
+    _setLoading(true);
+    await _repository.unTrashNote(id);
+    await loadTrashList();
+    _setLoading(false);
+  }
+  
   Future<void> deleteNote(int id) async {
     _setLoading(true);
     await _repository.deleteNote(id);
-    await loadNotes();
+    await loadTrashList();
     _setLoading(false);
   }
 }

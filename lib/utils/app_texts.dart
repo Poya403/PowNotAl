@@ -39,5 +39,7 @@ class AppTexts{
   static String share = 'اشتراک گذاری';
 
   static String areYouSure = 'آیا مطمئن هستید؟';
+
+  static String trashList = 'یادداشت های حذف شده';
   // messagebox
 }

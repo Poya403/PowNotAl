@@ -6,25 +6,25 @@ import 'package:provider/provider.dart';
 import '../../../utils/date_converter.dart';
 import '../providers/note_provider.dart';
 
-class NoteListScreen extends StatefulWidget {
-  const NoteListScreen({super.key});
+class TrashScreen extends StatefulWidget {
+  const TrashScreen({super.key});
 
   @override
-  State<NoteListScreen> createState() => _NoteListScreenState();
+  State<TrashScreen> createState() => _TrashScreenState();
 }
 
-class _NoteListScreenState extends State<NoteListScreen> {
+class _TrashScreenState extends State<TrashScreen> {
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      loadNotes(context);
+      loadTrashList(context);
     });
   }
 
-  void loadNotes(BuildContext context) async {
+  void loadTrashList(BuildContext context) async {
     final noteProvider = context.read<NoteProvider>();
-    await noteProvider.loadNotes();
+    await noteProvider.loadTrashList();
   }
 
   @override
@@ -44,7 +44,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 Container(
                   margin: EdgeInsets.fromLTRB(10.0, 15.0, 0, 0),
                   child: ElevatedButton(
-                    onPressed: () async => await noteProvider.loadNotes(),
+                    onPressed: () => loadTrashList(context),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
                         vertical: 12,
@@ -83,17 +83,17 @@ class _NoteListScreenState extends State<NoteListScreen> {
                           ),
                           leading: isDesktop
                               ? SizedBox(
-                                  width: 50,
-                                  child: CircleAvatar(
-                                    backgroundColor: Theme.of(
-                                      context,
-                                    ).colorScheme.primary,
-                                    child: Icon(
-                                      Icons.note,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                )
+                            width: 50,
+                            child: CircleAvatar(
+                              backgroundColor: Theme.of(
+                                context,
+                              ).colorScheme.primary,
+                              child: Icon(
+                                Icons.note,
+                                color: Colors.white,
+                              ),
+                            ),
+                          )
                               : null,
                           title: Text(
                             note.title,
@@ -111,7 +111,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                               SizedBox(height: 6),
                               Text(
                                 '${getPersianDate(note.createdDate)} - '
-                                '${getPersianTime(note.createdDate)}',
+                                    '${getPersianTime(note.createdDate)}',
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: Colors.grey,
@@ -121,52 +121,50 @@ class _NoteListScreenState extends State<NoteListScreen> {
                           ),
                           trailing: isDesktop
                               ? Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    IconButton(
-                                      icon: Icon(
-                                        Icons.delete,
-                                        color: Colors.redAccent,
-                                      ),
-                                      onPressed: () async {
-                                        final confirmed = await showDialog(
-                                          context: context,
-                                          builder: (_) => AlertDialog(
-                                            title: Text(AppTexts.areYouSure),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () =>
-                                                    Navigator.pop(context, false),
-                                                child: Text('خیر'),
-                                              ),
-                                              TextButton(
-                                                onPressed: () =>
-                                                    Navigator.pop(context, true),
-                                                child: Text('بله'),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                        if (note.id != null && confirmed) {
-                                          await noteProvider.trashNote(note.id!);
-                                        }
-                                      },
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: Icon(
+                                  Icons.delete,
+                                  color: Colors.redAccent,
+                                ),
+                                onPressed: () async {
+                                  final confirmed = await showDialog(
+                                    context: context,
+                                    builder: (_) => AlertDialog(
+                                      title: Text(AppTexts.areYouSure),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context, false),
+                                          child: Text('خیر'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context, true),
+                                          child: Text('بله'),
+                                        ),
+                                      ],
                                     ),
-                                    IconButton(
-                                      icon: Icon(
-                                        Icons.edit,
-                                        color: Colors.blue,
-                                      ),
-                                      onPressed: () {
-                                        Navigator.pushNamed(
-                                          context,
-                                          '/note_edit',
-                                          arguments: {'note': note},
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                )
+                                  );
+                                  if (note.id != null && confirmed) {
+                                    await noteProvider.deleteNote(note.id!);
+                                  }
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.restore,
+                                  color: Colors.blueGrey,
+                                ),
+                                onPressed: () async {
+                                  if (note.id != null) {
+                                    await noteProvider.unTrashNote(note.id!);
+                                  }
+                                },
+                              ),
+                            ],
+                          )
                               : null,
                           onTap: () {
                             Navigator.pushNamed(
@@ -195,10 +193,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
                           child: Icon(Icons.delete, color: Colors.white),
                         ),
                         secondaryBackground: Container(
-                          color: Colors.blue,
+                          color: Colors.blueGrey,
                           alignment: Alignment.centerRight,
                           padding: EdgeInsets.symmetric(horizontal: 20),
-                          child: Icon(Icons.edit, color: Colors.white),
+                          child: Icon(Icons.restore, color: Colors.white),
                         ),
                         confirmDismiss: (direction) async {
                           if (direction == DismissDirection.startToEnd) {
@@ -221,17 +219,11 @@ class _NoteListScreenState extends State<NoteListScreen> {
                               ),
                             );
                             if (confirmed == true && note.id != null) {
-                              await noteProvider.trashNote(note.id!);
+                              await noteProvider.deleteNote(note.id!);
                             }
                             return confirmed;
                           } else {
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              Navigator.pushNamed(
-                                context,
-                                '/note_edit',
-                                arguments: {'note': note},
-                              );
-                            });
+                            await noteProvider.unTrashNote(note.id!);
                             return false;
                           }
                         },

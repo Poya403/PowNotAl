@@ -21,6 +21,8 @@ dependencies:
   sqflite_common_ffi: ^2.3.0
   path: ^1.8.0
   share_plus: ^7.2.1
+  google_sign_in: ^6.0.0
+  googleapis: ^13.0.0
 
 dev_dependencies:
   flutter_test:
