@@ -28,7 +28,7 @@ class DatabaseHelper {
             title TEXT,
             content TEXT,
             created_date TEXT,
-            status TEXT DEFAULT 'untrash',
+            status TEXT DEFAULT 'untrash'
           )
         ''');
       },
