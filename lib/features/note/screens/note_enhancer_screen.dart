@@ -44,18 +44,47 @@ class _NoteEnhancerScreenState extends State<NoteEnhancerScreen> {
     });
   }
 
+  Future<void> handleDevelopText() async {
+    isLoadingNotifier.value = true;
+
+    try {
+      final improvedText = await improveRequest(
+        form: selectedFormNotifier.value.title,
+        title: widget.titleController.text.trim(),
+        content: widget.contentController.text.trim(),
+      );
+
+      if (!mounted) return;
+
+      widget.contentController.value = TextEditingValue(
+        text: improvedText,
+        selection: TextSelection.collapsed(
+            offset: improvedText.length),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('خطا در دریافت متن از هوش مصنوعی')),
+      );
+    } finally {
+      if (mounted) {
+        isLoadingNotifier.value = false;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
-    return widget.isExpanded
-        ? SingleChildScrollView(
+    return SingleChildScrollView(
       child: Stack(
           children: [
-            Center(
+            Align(
+              alignment: Alignment.center,
               child: SizedBox(
                 width: isDesktop
-                    ? MediaQuery.of(context).size.width * 0.5
-                    : MediaQuery.of(context).size.width * 0.85,
+                    ? 400 : MediaQuery.of(context).size.width * 0.85,
                 child: Card(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8)),
@@ -64,6 +93,7 @@ class _NoteEnhancerScreenState extends State<NoteEnhancerScreen> {
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(32.0, 10.0, 32, 10.0),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Wrap(
                           crossAxisAlignment: WrapCrossAlignment.center,
@@ -90,64 +120,38 @@ class _NoteEnhancerScreenState extends State<NoteEnhancerScreen> {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(top: 20.0),
-                              child: Tooltip(
-                                message: hasInternet
-                                    ? ''
-                                    : AppTexts.internetNeeded,
-                                child: ValueListenableBuilder<bool>(
-                                  valueListenable: isLoadingNotifier,
-                                  builder: (context, value, child) {
-                                    return ElevatedButton(
-                                      onPressed: (hasInternet && !isLoadingNotifier.value)
-                                          ? () async {
-                                        isLoadingNotifier.value = true;
+                              child: ValueListenableBuilder<bool>(
+                                valueListenable: isLoadingNotifier,
+                                builder: (context, isLoading, _) {
+                                  final canPress = hasInternet && !isLoading;
 
-                                        try {
-                                          final improvedText = await improveRequest(
-                                            form: selectedFormNotifier.value.title,
-                                            title: widget.titleController.text.trim(),
-                                            content: widget.contentController.text.trim(),
-                                          );
-
-                                          if (!mounted) return;
-
-                                          widget.contentController.value = TextEditingValue(
-                                            text: improvedText,
-                                            selection: TextSelection.collapsed(
-                                                offset: improvedText.length),
-                                          );
-                                        } catch (e) {
-                                          if (!mounted) return;
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(
-                                                content: Text('خطا در دریافت متن از هوش مصنوعی')),
-                                          );
-                                        } finally {
-                                          if (mounted) {
-                                            isLoadingNotifier.value = false;
-                                          }
-                                        }
-                                      } : null,
-
-                                      style: ElevatedButton.styleFrom(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 12, horizontal: 16),
-                                          backgroundColor: Theme
-                                              .of(context)
-                                              .primaryColor
+                                  return Tooltip(
+                                    message: hasInternet ? '' : AppTexts.internetNeeded,
+                                    child: Directionality(
+                                      textDirection: TextDirection.rtl,
+                                      child: ElevatedButton.icon(
+                                        onPressed: canPress ? handleDevelopText : null,
+                                        icon: Icon(
+                                          Icons.auto_fix_high_outlined,
+                                          color: canPress ? Colors.white : Colors.grey[400],
+                                        ),
+                                        label: Text(
+                                          AppTexts.developText,
+                                          style: TextStyle(
+                                              color: canPress ? Colors.white : Colors.grey[400]
+                                          ),
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                                          backgroundColor: canPress
+                                              ? Theme.of(context).primaryColor
+                                              : Colors.grey[300],
+                                        ),
                                       ),
-                                      child: Text(
-                                        AppTexts.developText,
-                                        style: Theme
-                                            .of(context)
-                                            .textTheme
-                                            .titleSmall
-                                            ?.copyWith(color: Colors.white),
-                                      ),
-                                    );
-                                  }
-                                ),
-                              ),
+                                    ),
+                                  );
+                                },
+                              )
                             ),
                             AppSpacing.height16,
                           ],
@@ -176,7 +180,6 @@ class _NoteEnhancerScreenState extends State<NoteEnhancerScreen> {
 
           ]
       ),
-    )
-        : SizedBox.shrink();
+    );
   }
 }

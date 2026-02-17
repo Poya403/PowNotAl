@@ -3,7 +3,6 @@ import 'package:pow_note_ai/features/note/screens/note_list_screen.dart';
 import 'package:pow_note_ai/features/trash_panel/screens/trash_screen.dart';
 import 'package:pow_note_ai/features/backup_panel/screens/back_up_screen.dart';
 import 'package:pow_note_ai/utils/app_texts.dart';
-
 import '../../utils/app_radius.dart';
 
 class MenuScreen extends StatefulWidget {
@@ -26,48 +25,66 @@ class _MenuScreenState extends State<MenuScreen> {
   final titles = [
     AppTexts.notes,
     AppTexts.trashList,
-    AppTexts.cloudSpace
+    AppTexts.cloudSpace,
     //AppTexts.settings,
   ];
 
   @override
   Widget build(BuildContext context) {
+    final Color defaultColor = Theme.of(context).colorScheme.primary;
+
+    final TextStyle? listTileTextStyle = Theme.of(
+      context,
+    ).textTheme.bodySmall?.copyWith(color: defaultColor);
+
+    final TextStyle? titleStyle = Theme.of(context).textTheme.titleSmall;
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        appBar: AppBar(title: Text(titles[selectedIndex])),
+        appBar: AppBar(
+          title: Text(titles[selectedIndex], style: titleStyle),
+          centerTitle: true,
+        ),
         drawer: Drawer(
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
               DrawerHeader(
-                decoration: const BoxDecoration(color: Colors.blue),
-                child: Text(
-                  AppTexts.menu,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleMedium?.copyWith(color: Colors.white),
-                ),
+                decoration: BoxDecoration(color: defaultColor),
+                child: Text('', style: titleStyle),
               ),
               ListTile(
-                leading: const Icon(Icons.list_alt_outlined),
-                title: Text(AppTexts.notes),
+                leading: Icon(Icons.notes, color: defaultColor),
+                title: Text(
+                  AppTexts.notes,
+                  style: listTileTextStyle,
+                ),
                 onTap: () {
                   setState(() => selectedIndex = 0);
                   Navigator.pop(context);
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.restore_from_trash_rounded),
-                title: Text(AppTexts.trashList),
+                leading: Icon(
+                  Icons.restore_from_trash_rounded,
+                  color: defaultColor,
+                ),
+                title: Text(
+                  AppTexts.trashList,
+                  style: listTileTextStyle,
+                ),
                 onTap: () {
                   setState(() => selectedIndex = 1);
                   Navigator.pop(context);
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.cloud),
-                title: Text(AppTexts.cloudSpace),
+                leading: Icon(Icons.cloud, color: defaultColor),
+                title: Text(
+                  AppTexts.cloudSpace,
+                  style: listTileTextStyle,
+                ),
                 onTap: () {
                   setState(() => selectedIndex = 2);
                   Navigator.pop(context);
@@ -91,14 +108,9 @@ class _MenuScreenState extends State<MenuScreen> {
                   await Navigator.pushNamed(context, '/note_edit');
                 },
                 tooltip: AppTexts.editNote,
-                shape: RoundedRectangleBorder(
-                    borderRadius: AppRadius.radius30
-                ),
+                shape: RoundedRectangleBorder(borderRadius: AppRadius.radius30),
                 backgroundColor: Theme.of(context).colorScheme.primary,
-                child: Icon(
-                  Icons.add,
-                  color: Colors.white,
-                ),
+                child: Icon(Icons.add, color: Colors.white),
               )
             : null,
       ),

@@ -34,13 +34,13 @@ class AppTexts{
   static String text = 'متن';
   static String enterText = 'متن یادداشت را وارد کنید...';
 
-  static String menu = 'منو';
+  static String menu = 'منو کاربری';
 
   static String share = 'اشتراک گذاری';
 
   static String areYouSure = 'آیا مطمئن هستید؟';
 
-  static String trashList = 'یادداشت های حذف شده';
+  static String trashList = 'سطل زباله';
 
   // بخش مدیریت داده ها
   static String cloudSpace = 'فضای ابری';
@@ -52,5 +52,7 @@ class AppTexts{
   static String unknown = 'بدون نام';
   static String latestVersion = 'آخرین ورژن';
   static String noBackups = 'نسخه پشتیبانی برای بازیابی وجود ندارد.';
+
+  static String search = 'جستجو عنوان';
   // messagebox
 }

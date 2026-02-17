@@ -5,6 +5,7 @@ import 'package:pow_note_ai/widgets/no_data_widget.dart';
 import 'package:provider/provider.dart';
 import '../../../utils/date_converter.dart';
 import 'package:pow_note_ai/features/note/providers/note_provider.dart';
+import 'search_box.dart';
 
 class TrashScreen extends StatefulWidget {
   const TrashScreen({super.key});
@@ -18,19 +19,16 @@ class _TrashScreenState extends State<TrashScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      loadTrashList(context);
+      context.read<NoteProvider>().loadTrashList();
     });
-  }
-
-  void loadTrashList(BuildContext context) async {
-    final noteProvider = context.read<NoteProvider>();
-    await noteProvider.loadTrashList();
   }
 
   @override
   Widget build(BuildContext context) {
-    final noteProvider = context.read<NoteProvider>();
-    final isDesktop = MediaQuery.of(context).size.width > 800;
+    final isDesktop = MediaQuery
+        .of(context)
+        .size
+        .width > 800;
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -38,25 +36,33 @@ class _TrashScreenState extends State<TrashScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  margin: EdgeInsets.fromLTRB(10.0, 15.0, 0, 0),
-                  child: ElevatedButton(
-                    onPressed: () => loadTrashList(context),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 16,
+            SearchBox(),
+            Consumer<NoteProvider>(
+              builder: (context, provider, _) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.fromLTRB(10.0, 15.0, 0, 0),
+                      child: ElevatedButton(
+                        onPressed: () async => await provider.loadTrashList(),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 16,
+                          ),
+                          backgroundColor: Theme
+                              .of(context)
+                              .primaryColor,
+                        ),
+                        child: Icon(Icons.refresh, color: Colors.white),
                       ),
-                      backgroundColor: Theme.of(context).primaryColor,
                     ),
-                    child: Icon(Icons.refresh, color: Colors.white),
-                  ),
-                ),
-              ],
+                  ],
+                );
+              },
             ),
+
             SizedBox(height: 10),
             Expanded(
               child: Consumer<NoteProvider>(
@@ -85,9 +91,12 @@ class _TrashScreenState extends State<TrashScreen> {
                               ? SizedBox(
                             width: 50,
                             child: CircleAvatar(
-                              backgroundColor: Theme.of(
+                              backgroundColor: Theme
+                                  .of(
                                 context,
-                              ).colorScheme.primary,
+                              )
+                                  .colorScheme
+                                  .primary,
                               child: Icon(
                                 Icons.note,
                                 color: Colors.white,
@@ -131,24 +140,25 @@ class _TrashScreenState extends State<TrashScreen> {
                                 onPressed: () async {
                                   final confirmed = await showDialog(
                                     context: context,
-                                    builder: (_) => AlertDialog(
-                                      title: Text(AppTexts.areYouSure),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context, false),
-                                          child: Text('خیر'),
+                                    builder: (_) =>
+                                        AlertDialog(
+                                          title: Text(AppTexts.areYouSure),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context, false),
+                                              child: Text('خیر'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context, true),
+                                              child: Text('بله'),
+                                            ),
+                                          ],
                                         ),
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context, true),
-                                          child: Text('بله'),
-                                        ),
-                                      ],
-                                    ),
                                   );
                                   if (note.id != null && confirmed) {
-                                    await noteProvider.deleteNote(note.id!);
+                                    await provider.deleteNote(note.id!);
                                   }
                                 },
                               ),
@@ -159,7 +169,7 @@ class _TrashScreenState extends State<TrashScreen> {
                                 ),
                                 onPressed: () async {
                                   if (note.id != null) {
-                                    await noteProvider.unTrashNote(note.id!);
+                                    await provider.unTrashNote(note.id!);
                                   }
                                 },
                               ),
@@ -202,30 +212,31 @@ class _TrashScreenState extends State<TrashScreen> {
                           if (direction == DismissDirection.startToEnd) {
                             final confirmed = await showDialog(
                               context: context,
-                              builder: (_) => AlertDialog(
-                                title: Text(AppTexts.areYouSure),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(context, false),
-                                    child: Text('خیر'),
+                              builder: (_) =>
+                                  AlertDialog(
+                                    title: Text(AppTexts.areYouSure),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(context, false),
+                                        child: Text('خیر'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(context, true),
+                                        child: Text('بله'),
+                                      ),
+                                    ],
                                   ),
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(context, true),
-                                    child: Text('بله'),
-                                  ),
-                                ],
-                              ),
                             );
                             if (confirmed == true && note.id != null) {
-                              await noteProvider.deleteNote(note.id!);
+                              await provider.deleteNote(note.id!);
                             }
-                            return confirmed;
-                          } else {
-                            await noteProvider.unTrashNote(note.id!);
-                            return false;
-                          }
+                              return confirmed;
+                            } else {
+                              await provider.unTrashNote(note.id!);
+                              return false;
+                            }
                         },
                         child: Container(
                           padding: EdgeInsets.symmetric(horizontal: 5),

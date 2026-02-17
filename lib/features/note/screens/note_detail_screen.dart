@@ -50,7 +50,10 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(note!.title),
+          title: Text(
+              note!.title,
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
           centerTitle: true,
         ),
 

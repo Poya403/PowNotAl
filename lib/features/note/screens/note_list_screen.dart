@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pow_note_ai/features/note/screens/search_box.dart';
 import 'package:pow_note_ai/utils/app_radius.dart';
+import 'package:pow_note_ai/utils/app_spacing.dart';
 import 'package:pow_note_ai/utils/app_texts.dart';
 import 'package:pow_note_ai/widgets/no_data_widget.dart';
 import 'package:provider/provider.dart';
@@ -18,18 +20,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      loadNotes(context);
+      context.read<NoteProvider>().loadNotes();
     });
-  }
-
-  void loadNotes(BuildContext context) async {
-    final noteProvider = context.read<NoteProvider>();
-    await noteProvider.loadNotes();
   }
 
   @override
   Widget build(BuildContext context) {
-    final noteProvider = context.read<NoteProvider>();
     final isDesktop = MediaQuery.of(context).size.width > 800;
 
     return Directionality(
@@ -38,26 +34,49 @@ class _NoteListScreenState extends State<NoteListScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  margin: EdgeInsets.fromLTRB(10.0, 15.0, 0, 0),
-                  child: ElevatedButton(
-                    onPressed: () async => await noteProvider.loadNotes(),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 16,
+            SearchBox(),
+
+            Consumer<NoteProvider>(
+              builder: (context, provider, _) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(10.0, 15.0, 0, 0),
+                      child: ElevatedButton(
+                        onPressed: provider.isLoading
+                            ? null
+                            : () async {
+                          await provider.loadNotes();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 16,
+                          ),
+                          backgroundColor:
+                          Theme.of(context).primaryColor,
+                        ),
+                        child: provider.isLoading
+                            ? const SizedBox(
+                          height: 18,
+                          width: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                            : const Icon(Icons.refresh,
+                            color: Colors.white),
                       ),
-                      backgroundColor: Theme.of(context).primaryColor,
                     ),
-                    child: Icon(Icons.refresh, color: Colors.white),
-                  ),
-                ),
-              ],
+                  ],
+                );
+              },
             ),
-            SizedBox(height: 10),
+
+            AppSpacing.height10,
+
             Expanded(
               child: Consumer<NoteProvider>(
                 builder: (context, provider, _) {
@@ -148,7 +167,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                           ),
                                         );
                                         if (note.id != null && confirmed) {
-                                          await noteProvider.trashNote(note.id!);
+                                          await provider.trashNote(note.id!);
                                         }
                                       },
                                     ),
@@ -221,7 +240,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                               ),
                             );
                             if (confirmed == true && note.id != null) {
-                              await noteProvider.trashNote(note.id!);
+                              await provider.trashNote(note.id!);
                             }
                             return confirmed;
                           } else {

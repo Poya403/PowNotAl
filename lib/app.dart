@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
               fontFamily: 'FarsiFonts',
               textTheme: const TextTheme(
-                  bodySmall: TextStyle(fontSize: 14),
+                  bodySmall: TextStyle(fontSize: 15),
                   bodyMedium: TextStyle(fontSize: 16),
                   bodyLarge: TextStyle(fontSize: 18),
                   titleSmall: TextStyle(fontSize: 20),

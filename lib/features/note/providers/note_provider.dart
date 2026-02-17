@@ -22,6 +22,18 @@ class NoteProvider with ChangeNotifier {
     _setLoading(false);
   }
 
+  Future<void> searchNotes({String? title, String? content}) async {
+    _setLoading(true);
+    _notes = await _repository.searchNotes(title: title, content: content);
+    _setLoading(false);
+  }
+
+  Future<void> searchTrashNotes({String? title, String? content}) async {
+    _setLoading(true);
+    _notes = await _repository.searchTrashNotes(title: title, content: content);
+    _setLoading(false);
+  }
+
   Future<void> loadTrashList() async {
     _setLoading(true);
     _notes = await _repository.loadTrashList();

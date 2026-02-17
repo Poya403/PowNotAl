@@ -16,88 +16,62 @@ class NoteEditScreen extends StatefulWidget {
 }
 
 class _NoteEditScreenState extends State<NoteEditScreen> {
+  final ValueNotifier<int> _updateNotifier = ValueNotifier(0);
   TextEditingController titleController = TextEditingController();
   TextEditingController contentController = TextEditingController();
   Note? editingNote;
+  bool _initialized = false;
 
   @override
   void initState() {
     super.initState();
-    titleController.addListener(_updateUI);
-    contentController.addListener(_updateUI);
+    titleController.addListener(_onTextChanged);
+    contentController.addListener(_onTextChanged);
+  }
+
+  void _onTextChanged() {
+    _updateNotifier.value++;
   }
 
   @override
   void dispose() {
-    titleController.removeListener(_updateUI);
-    contentController.removeListener(_updateUI);
+    titleController.removeListener(_onTextChanged);
+    contentController.removeListener(_onTextChanged);
+    _updateNotifier.dispose();
     titleController.dispose();
     contentController.dispose();
     super.dispose();
   }
 
-  void _updateUI() => setState(() {});
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    _getArguments();
-    _initializeFields();
-  }
+    if (!_initialized) {
+      final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
-  void _getArguments() {
-    final args =
-    ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    if (args == null) return;
+      editingNote = args?['note'];
 
-    final newEditingNote = args['note'] as Note?;
-
-    if (editingNote?.id != newEditingNote?.id) {
-      editingNote = newEditingNote;
-
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (editingNote != null) {
-          if (titleController.text.isEmpty) {
-            titleController.text = editingNote!.title;
-          }
-          if (contentController.text.isEmpty) {
-            contentController.text = editingNote!.content;
-          }
-        } else {
-          if (titleController.text.isEmpty) titleController.clear();
-          if (contentController.text.isEmpty) contentController.clear();
-        }
-      });
-    }
-  }
-
-
-  void _initializeFields() {
-    if (editingNote != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (editingNote != null) {
         titleController.text = editingNote!.title;
         contentController.text = editingNote!.content;
-        contentController.selection = TextSelection.fromPosition(
-          TextPosition(offset: contentController.text.length),
-        );
-      });
-    } else {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        titleController.clear();
-        contentController.clear();
-      });
+      }
+
+      _initialized = true;
     }
   }
 
-
-  String get _pageTitle {
+  void _resetChanges() {
     if (editingNote != null) {
-      return AppTexts.editNote;
+      titleController.text = editingNote!.title;
+      contentController.text = editingNote!.content;
     } else {
-      return AppTexts.addNote;
+      titleController.clear();
+      contentController.clear();
     }
   }
+
+  String get _pageTitle => editingNote != null ? AppTexts.editNote : AppTexts.addNote;
 
   bool get isModified {
     if (editingNote == null) return false;
@@ -132,7 +106,13 @@ class _NoteEditScreenState extends State<NoteEditScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(_pageTitle), centerTitle: true),
+      appBar: AppBar(
+          title: Text(
+              _pageTitle,
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          centerTitle: true
+      ),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
@@ -143,23 +123,15 @@ class _NoteEditScreenState extends State<NoteEditScreen> {
               CustomTextField(
                 controller: titleController,
                 labelText: AppTexts.title,
-                suffixIcon: IconButton(
-                  onPressed: () => titleController.clear(),
-                  icon: Icon(Icons.cancel_outlined),
-                ),
-              ),
-              AppSpacing.height20,
-              SingleChildScrollView(
-                child: CustomTextField(
-                  controller: contentController,
-                  labelText: AppTexts.enterText,
-                  maxLines: null,
-                  minLines: 8,
-                  keyboardType: TextInputType.multiline,
-                  suffixIcon: IconButton(
-                    onPressed: () => contentController.clear(),
-                    icon: Icon(Icons.cancel_outlined),
-                  ),
+                suffixIcon: ValueListenableBuilder<TextEditingValue>(
+                  valueListenable: titleController,
+                  builder: (context, value, child) {
+                    if (value.text.isEmpty) return const SizedBox.shrink();
+                    return IconButton(
+                      onPressed: () => titleController.clear(),
+                      icon: const Icon(Icons.cancel_outlined),
+                    );
+                  },
                 ),
               ),
               AppSpacing.height20,
@@ -167,6 +139,25 @@ class _NoteEditScreenState extends State<NoteEditScreen> {
                 titleController: titleController,
                 contentController: contentController,
               ),
+              AppSpacing.height20,
+              CustomTextField(
+                controller: contentController,
+                labelText: AppTexts.enterText,
+                maxLines: null,
+                minLines: 8,
+                keyboardType: TextInputType.multiline,
+                suffixIcon: ValueListenableBuilder<TextEditingValue>(
+                  valueListenable: contentController,
+                  builder: (context, value, child) {
+                    if (value.text.isEmpty) return const SizedBox.shrink();
+                    return IconButton(
+                      onPressed: () => contentController.clear(),
+                      icon: const Icon(Icons.cancel_outlined),
+                    );
+                  },
+                ),
+              ),
+
               AppSpacing.height30,
               _buildEditButtons()
             ],
@@ -178,24 +169,35 @@ class _NoteEditScreenState extends State<NoteEditScreen> {
 
   Widget _buildEditButtons() {
     final isDesktop = MediaQuery.of(context).size.width > 800;
-    final buttons = [
-      CustomButton(
-        title: AppTexts.save,
-        onPressed: _saveNote,
-        enabled: canSave,
-      ),
-      const SizedBox(width: 10, height: 10),
-      CustomButton(
-        title: AppTexts.clearChanges,
-        onPressed: _initializeFields,
-        enabled: isModified,
-        backgroundColor: Colors.redAccent,
-      ),
-    ];
-    return isDesktop
-        ? Row(mainAxisAlignment: MainAxisAlignment.center, children: buttons)
-        : Column(children: buttons);
+    return ValueListenableBuilder<int>(
+      valueListenable: _updateNotifier,
+      builder: (context, _, __) {
+        final buttons = [
+          CustomButton(
+            title: AppTexts.save,
+            onPressed: canSave ? _saveNote : null,
+            enabled: canSave,
+          ),
+          const SizedBox(width: 10, height: 10),
+          if(editingNote != null)
+            CustomButton(
+              title: AppTexts.clearChanges,
+              onPressed: isModified ? _resetChanges : null,
+              enabled: isModified,
+              backgroundColor: Colors.redAccent,
+            ),
+        ];
+
+        return isDesktop
+            ? Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: buttons,
+        )
+            : Column(children: buttons);
+      },
+    );
   }
+
 }
 
 class CustomButton extends StatelessWidget {
