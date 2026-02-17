@@ -58,16 +58,16 @@ class _NoteListScreenState extends State<NoteListScreen> {
                           Theme.of(context).primaryColor,
                         ),
                         child: provider.isLoading
-                            ? const SizedBox(
+                            ? SizedBox(
                           height: 18,
                           width: 18,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.surface,
                           ),
                         )
-                            : const Icon(Icons.refresh,
-                            color: Colors.white),
+                            : Icon(Icons.refresh,
+                            color: Theme.of(context).colorScheme.surface),
                       ),
                     ),
                   ],
@@ -94,7 +94,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: AppRadius.radius16,
                         ),
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
                         child: ListTile(
                           contentPadding: EdgeInsets.symmetric(
                             horizontal: 16,
@@ -109,7 +109,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                     ).colorScheme.primary,
                                     child: Icon(
                                       Icons.note,
-                                      color: Colors.white,
+                                      color: Theme.of(context).colorScheme.surface,
                                     ),
                                   ),
                                 )
@@ -211,13 +211,13 @@ class _NoteListScreenState extends State<NoteListScreen> {
                           color: Colors.red,
                           alignment: Alignment.centerLeft,
                           padding: EdgeInsets.symmetric(horizontal: 20),
-                          child: Icon(Icons.delete, color: Colors.white),
+                          child: Icon(Icons.delete, color: Theme.of(context).colorScheme.surface),
                         ),
                         secondaryBackground: Container(
                           color: Colors.blue,
                           alignment: Alignment.centerRight,
                           padding: EdgeInsets.symmetric(horizontal: 20),
-                          child: Icon(Icons.edit, color: Colors.white),
+                          child: Icon(Icons.edit, color: Theme.of(context).colorScheme.surface),
                         ),
                         confirmDismiss: (direction) async {
                           if (direction == DismissDirection.startToEnd) {

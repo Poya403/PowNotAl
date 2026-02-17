@@ -89,7 +89,7 @@ class _NoteEnhancerScreenState extends State<NoteEnhancerScreen> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8)),
                   elevation: 0,
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(32.0, 10.0, 32, 10.0),
                     child: Column(
@@ -133,12 +133,14 @@ class _NoteEnhancerScreenState extends State<NoteEnhancerScreen> {
                                         onPressed: canPress ? handleDevelopText : null,
                                         icon: Icon(
                                           Icons.auto_fix_high_outlined,
-                                          color: canPress ? Colors.white : Colors.grey[400],
+                                          color: canPress
+                                              ? Theme.of(context).colorScheme.surface : Colors.grey[400],
                                         ),
                                         label: Text(
                                           AppTexts.developText,
                                           style: TextStyle(
-                                              color: canPress ? Colors.white : Colors.grey[400]
+                                              color: canPress
+                                                  ? Theme.of(context).colorScheme.surface : Colors.grey[400]
                                           ),
                                         ),
                                         style: ElevatedButton.styleFrom(

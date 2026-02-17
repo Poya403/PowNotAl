@@ -43,7 +43,7 @@ class _BackUpScreenState extends State<BackUpScreen> {
         child: Card(
           shape: RoundedRectangleBorder(borderRadius: AppRadius.radius10),
           elevation: 2,
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           child: Padding(
             padding: isDesktop
                 ? const EdgeInsets.fromLTRB(100, 40, 100, 40)

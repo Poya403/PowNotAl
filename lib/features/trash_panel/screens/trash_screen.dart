@@ -55,7 +55,7 @@ class _TrashScreenState extends State<TrashScreen> {
                               .of(context)
                               .primaryColor,
                         ),
-                        child: Icon(Icons.refresh, color: Colors.white),
+                        child: Icon(Icons.refresh, color: Theme.of(context).colorScheme.surface),
                       ),
                     ),
                   ],
@@ -81,7 +81,7 @@ class _TrashScreenState extends State<TrashScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: AppRadius.radius16,
                         ),
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
                         child: ListTile(
                           contentPadding: EdgeInsets.symmetric(
                             horizontal: 16,
@@ -99,7 +99,7 @@ class _TrashScreenState extends State<TrashScreen> {
                                   .primary,
                               child: Icon(
                                 Icons.note,
-                                color: Colors.white,
+                                color: Theme.of(context).colorScheme.surface,
                               ),
                             ),
                           )
@@ -200,13 +200,13 @@ class _TrashScreenState extends State<TrashScreen> {
                           color: Colors.red,
                           alignment: Alignment.centerLeft,
                           padding: EdgeInsets.symmetric(horizontal: 20),
-                          child: Icon(Icons.delete, color: Colors.white),
+                          child: Icon(Icons.delete, color: Theme.of(context).colorScheme.surface),
                         ),
                         secondaryBackground: Container(
                           color: Colors.blueGrey,
                           alignment: Alignment.centerRight,
                           padding: EdgeInsets.symmetric(horizontal: 20),
-                          child: Icon(Icons.restore, color: Colors.white),
+                          child: Icon(Icons.restore, color: Theme.of(context).colorScheme.surface),
                         ),
                         confirmDismiss: (direction) async {
                           if (direction == DismissDirection.startToEnd) {

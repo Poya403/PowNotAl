@@ -94,7 +94,7 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: AppRadius.radius16,
                     ),
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: SingleChildScrollView(
@@ -150,7 +150,7 @@ class CustomButton extends StatelessWidget {
             onPressed: enabled ? onPressed : null,
             child: Icon(
               icon,
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
             )
           ),
         ),

@@ -57,7 +57,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
             minLines: widget.minLines,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontSize: isDesktop ? widget.fontSize : widget.fontSize * 0.9,
-              color: widget.readOnly ? Colors.grey.shade600 : Colors.black,
+              color: widget.readOnly
+                  ? Theme.of(context).disabledColor
+                  : Theme.of(context).colorScheme.onSurface,
             ),
             decoration: InputDecoration(
               labelText: widget.labelText,
@@ -66,13 +68,15 @@ class _CustomTextFieldState extends State<CustomTextField> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
-                borderSide: const BorderSide(color: Colors.blue, width: 2),
+                borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
               ),
               prefixIcon: widget.prefixIcon,
               suffixIcon: widget.suffixIcon,
               alignLabelWithHint: true,
               filled: widget.filled,
-              fillColor: widget.readOnly ? Colors.grey.shade100 : Colors.white,
+              fillColor: widget.readOnly
+                  ? Theme.of(context).colorScheme.surfaceContainerHighest
+                  : Theme.of(context).colorScheme.surface,
               contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
             ),
           ),

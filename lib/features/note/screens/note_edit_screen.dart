@@ -232,7 +232,7 @@ class CustomButton extends StatelessWidget {
             title,
             style: Theme.of(
               context,
-            ).textTheme.titleSmall?.copyWith(color: Colors.white),
+            ).textTheme.titleSmall?.copyWith(color: Theme.of(context).colorScheme.surface),
           ),
         ),
       ),

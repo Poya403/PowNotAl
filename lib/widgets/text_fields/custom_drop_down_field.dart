@@ -28,9 +28,9 @@ class CustomDropdownField extends StatelessWidget {
       children: [
         Text(
           '$labelText :',
-          style: const TextStyle(
+          style: TextStyle(
               fontSize: 12,
-              color: Colors.black
+              color: Theme.of(context).colorScheme.primary
           ),
           textDirection: TextDirection.rtl,
         ),
@@ -43,7 +43,7 @@ class CustomDropdownField extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5),
-                border: Border.all(color: Colors.grey),
+                border: Border.all(color: Theme.of(context).colorScheme.surfaceContainerHighest),
               ),
               child: SizedBox(
                 height: 42.5,
@@ -51,7 +51,10 @@ class CustomDropdownField extends StatelessWidget {
                   child: DropdownButton<String>(
                     isExpanded: true,
                     value: items.contains(value) ? value : null,
-                    hint: const Text("انتخاب کنید",style: TextStyle(color: Colors.grey)),
+                    hint: Text(
+                        "انتخاب کنید",
+                        style: TextStyle(color: Theme.of(context).colorScheme.surface))
+                    ,
                     style: Theme.of(context).textTheme.titleSmall,
                     items: items.map((String item) {
                       return DropdownMenuItem(
@@ -62,7 +65,7 @@ class CustomDropdownField extends StatelessWidget {
                     onChanged: onChanged,
                     icon: value != null ? IconButton(
                       icon: Icon(Icons.cancel_outlined),
-                      color: Colors.grey,
+                      color: Theme.of(context).colorScheme.surface,
                       onPressed: onPressed,
                     ) : null,
                   ),

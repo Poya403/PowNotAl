@@ -24,28 +24,71 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'flutter demo',
-          theme: ThemeData(
-              fontFamily: 'FarsiFonts',
-              textTheme: const TextTheme(
-                  bodySmall: TextStyle(fontSize: 15),
-                  bodyMedium: TextStyle(fontSize: 16),
-                  bodyLarge: TextStyle(fontSize: 18),
-                  titleSmall: TextStyle(fontSize: 20),
-                  titleMedium: TextStyle(fontSize: 25),
-                  titleLarge: TextStyle(fontSize: 35)
-              )
+        debugShowCheckedModeBanner: false,
+        title: 'flutter demo',
+
+        theme: ThemeData(
+          brightness: Brightness.light,
+          fontFamily: 'FarsiFonts',
+
+          colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.deepPurpleAccent,
+              surfaceContainerHighest: Colors.white
           ),
-          initialRoute: '/',
-          home: MenuScreen(),
-          routes: {
-            '/notes' : (context) => const NoteListScreen(),
-            '/trash_list': (context) => const TrashScreen(),
-            '/backup': (context) => const BackUpScreen(),
-            '/note_edit' : (context) => const NoteEditScreen(),
-            '/note_view' : (context) => const NoteDetailScreen(),
-          }
+
+          textTheme: const TextTheme(
+            bodySmall: TextStyle(fontSize: 15),
+            bodyMedium: TextStyle(fontSize: 16),
+            bodyLarge: TextStyle(fontSize: 18),
+            titleSmall: TextStyle(fontSize: 20),
+            titleMedium: TextStyle(fontSize: 25),
+            titleLarge: TextStyle(fontSize: 35),
+          ),
+        ),
+
+
+        darkTheme: ThemeData(
+          colorScheme:  ColorScheme.dark(
+            primary: Colors.deepPurpleAccent,
+              secondary: Colors.deepPurpleAccent,
+              background: Colors.grey,
+              surface: Color(0xFF1E1E1E),
+              onPrimary: Colors.white,
+              onSecondary: Colors.white,
+              onSurface: Colors.white,
+              onBackground: Colors.white,
+              surfaceContainerHighest: Colors.grey[800],
+              error: Colors.redAccent,
+              onError: Colors.white,
+          ),
+          brightness: Brightness.dark,
+          inputDecorationTheme: InputDecorationTheme(
+            filled: true,
+            fillColor: Colors.grey,
+          ),
+          fontFamily: 'FarsiFonts',
+          textTheme: const TextTheme(
+            bodySmall: TextStyle(fontSize: 15),
+            bodyMedium: TextStyle(fontSize: 16),
+            bodyLarge: TextStyle(fontSize: 18),
+            titleSmall: TextStyle(fontSize: 20),
+            titleMedium: TextStyle(fontSize: 25),
+            titleLarge: TextStyle(fontSize: 35),
+          ),
+          primaryColor: Colors.deepPurpleAccent
+        ),
+
+        themeMode: ThemeMode.system,
+
+        initialRoute: '/',
+        home: MenuScreen(),
+        routes: {
+          '/notes': (context) => const NoteListScreen(),
+          '/trash_list': (context) => const TrashScreen(),
+          '/backup': (context) => const BackUpScreen(),
+          '/note_edit': (context) => const NoteEditScreen(),
+          '/note_view': (context) => const NoteDetailScreen(),
+        },
       ),
     );
   }

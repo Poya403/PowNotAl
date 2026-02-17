@@ -44,6 +44,9 @@ class _CustomPersianDateFieldState extends State<CustomPersianDateField> {
       lastDate: Jalali(1450, 12),
       helpText: widget.helpText,
       builder: (context, child) {
+        final theme = Theme.of(context);
+        final isDark = theme.brightness == Brightness.dark;
+
         return Localizations.override(
           context: context,
           locale: const Locale('fa', 'IR'),
@@ -54,20 +57,22 @@ class _CustomPersianDateFieldState extends State<CustomPersianDateField> {
             PersianCupertinoLocalizations.delegate,
           ],
           child: Theme(
-            data: Theme.of(context).copyWith(
-              colorScheme: ColorScheme.light(
-                primary: Theme.of(context).primaryColor,
-                onPrimary: Colors.white,
-                onSurface: Colors.black,
+            data: theme.copyWith(
+              colorScheme: isDark
+                  ? theme.colorScheme
+                  : ColorScheme.light(
+                primary: theme.primaryColor,
+                onPrimary: theme.primaryColor,
+                onSurface: theme.colorScheme.surface,
               ),
-              textTheme: Theme.of(context).textTheme.copyWith(
-                titleMedium: TextStyle(
+              textTheme: theme.textTheme.copyWith(
+                titleMedium: theme.textTheme.titleMedium?.copyWith(
                   fontSize: 16,
-                  color: Theme.of(context).primaryColor,
+                  color: theme.colorScheme.primary,
                   fontWeight: FontWeight.bold,
                 ),
-                bodyMedium: const TextStyle(fontSize: 16),
-                labelLarge: const TextStyle(fontSize: 16),
+                bodyMedium: theme.textTheme.bodyMedium?.copyWith(fontSize: 16),
+                labelLarge: theme.textTheme.labelLarge?.copyWith(fontSize: 16),
               ),
             ),
             child: child!,
@@ -120,7 +125,7 @@ class _CustomPersianDateFieldState extends State<CustomPersianDateField> {
                     hintStyle: Theme.of(context).textTheme.bodySmall
                         ?.copyWith(color: Colors.grey),
                     border: InputBorder.none,
-                    fillColor: Colors.grey[100],
+                    fillColor: Theme.of(context).colorScheme.surface,
                     filled: true,
                   ),
                   keyboardType: widget.keyboardType,
