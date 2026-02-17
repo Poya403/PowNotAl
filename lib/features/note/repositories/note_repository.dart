@@ -4,40 +4,60 @@ import 'package:pow_note_ai/features/note/models/note_model.dart';
 class NoteRepository{
   final DatabaseHelper databaseHelper = DatabaseHelper();
 
-  Future<List<Note>> _getNotesByStatus(String status,{String? title,String? content}) async {
+  Future<List<Note>> _getNotesByStatus(
+      String status, {
+        String? title,
+        String? startDate,
+        String? endDate,
+      }) async {
     final database = await databaseHelper.database;
 
     String where = '(status = ? OR status IS NULL)';
     List<dynamic> whereArgs = [status];
 
-    if (title != null && title.isNotEmpty) {
-      where += ' AND LOWER(title) LIKE ?';
-      whereArgs.add('%${title.toLowerCase()}%');
+    if (title != null && title.trim().isNotEmpty) {
+      where += ' AND (LOWER(title) LIKE ? OR LOWER(content) LIKE ?)';
+      final searchValue = '%${title.toLowerCase()}%';
+      whereArgs.add(searchValue);
+      whereArgs.add(searchValue);
     }
 
-    if (content != null && content.isNotEmpty) {
-      where += ' AND LOWER(content) LIKE ?';
-      whereArgs.add('%${content.toLowerCase()}%');
+    if (startDate != null && endDate == null) {
+      where += ' AND Date(created_date) >= ?';
+      whereArgs.add(startDate);
+    }
+
+    if (startDate == null && endDate != null) {
+      where += ' AND Date(created_date) <= ?';
+      whereArgs.add(endDate);
+    }
+
+    if (startDate != null && endDate != null) {
+      where += ' AND (Date(created_date) BETWEEN ? AND ?)';
+      whereArgs.add(startDate);
+      whereArgs.add(endDate);
     }
 
     final data = await database.query(
       'notes',
       where: where,
       whereArgs: whereArgs,
-      orderBy: 'id DESC',
+      orderBy: 'created_date DESC',
     );
 
     return data.map((e) => Note.fromJson(e)).toList();
   }
 
+
+
   Future<List<Note>> loadNotes() => _getNotesByStatus('untrash');
   Future<List<Note>> loadTrashList() => _getNotesByStatus('trash');
 
-  Future<List<Note>> searchNotes({String? title, String? content}) async
-      => _getNotesByStatus('untrash', title: title, content: content);
+  Future<List<Note>> searchNotes({String? title, String? startDate, String? endDate}) async
+      => _getNotesByStatus('untrash', title: title, startDate: startDate, endDate: endDate);
 
-  Future<List<Note>> searchTrashNotes({String? title, String? content}) async
-  => _getNotesByStatus('trash', title: title, content: content);
+  Future<List<Note>> searchTrashNotes({String? title, String? startDate, String? endDate}) async
+      => _getNotesByStatus('trash', title: title, startDate: startDate, endDate: endDate);
 
   Future<void> saveNote(Note note) async {
     final database = await databaseHelper.database;

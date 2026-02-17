@@ -54,5 +54,8 @@ class AppTexts{
   static String noBackups = 'نسخه پشتیبانی برای بازیابی وجود ندارد.';
 
   static String search = 'جستجو عنوان';
+
+  static String startDate = 'از تاریخ';
+  static String endDate = 'تا تاریخ';
   // messagebox
 }

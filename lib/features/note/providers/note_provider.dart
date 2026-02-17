@@ -22,15 +22,23 @@ class NoteProvider with ChangeNotifier {
     _setLoading(false);
   }
 
-  Future<void> searchNotes({String? title, String? content}) async {
+  Future<void> searchNotes({String? title, String? startDate, String? endDate}) async {
     _setLoading(true);
-    _notes = await _repository.searchNotes(title: title, content: content);
+    _notes = await _repository.searchNotes(
+        title: title,
+        startDate: startDate,
+        endDate: endDate
+    );
     _setLoading(false);
   }
 
-  Future<void> searchTrashNotes({String? title, String? content}) async {
+  Future<void> searchTrashNotes({String? title, String? startDate, String? endDate}) async {
     _setLoading(true);
-    _notes = await _repository.searchTrashNotes(title: title, content: content);
+    _notes = await _repository.searchTrashNotes(
+        title: title,
+        startDate: startDate,
+        endDate: endDate
+    );
     _setLoading(false);
   }
 
