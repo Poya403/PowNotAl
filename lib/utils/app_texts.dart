@@ -41,5 +41,16 @@ class AppTexts{
   static String areYouSure = 'آیا مطمئن هستید؟';
 
   static String trashList = 'یادداشت های حذف شده';
+
+  // بخش مدیریت داده ها
+  static String cloudSpace = 'فضای ابری';
+  static String backUp = 'پشتیبان‌گیری';
+  static String restoreBackup = 'بازگردانی نسخه پشتیبان';
+
+  static String selectDriveFile = 'انتخاب نسخه پشتیبان';
+
+  static String unknown = 'بدون نام';
+  static String latestVersion = 'آخرین ورژن';
+  static String noBackups = 'نسخه پشتیبانی برای بازیابی وجود ندارد.';
   // messagebox
 }

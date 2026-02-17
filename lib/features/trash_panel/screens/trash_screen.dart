@@ -4,7 +4,7 @@ import 'package:pow_note_ai/utils/app_texts.dart';
 import 'package:pow_note_ai/widgets/no_data_widget.dart';
 import 'package:provider/provider.dart';
 import '../../../utils/date_converter.dart';
-import '../providers/note_provider.dart';
+import 'package:pow_note_ai/features/note/providers/note_provider.dart';
 
 class TrashScreen extends StatefulWidget {
   const TrashScreen({super.key});

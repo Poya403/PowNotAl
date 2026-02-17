@@ -4,7 +4,7 @@ import 'package:pow_note_ai/utils/app_texts.dart';
 import 'package:pow_note_ai/widgets/loading_widget.dart';
 import 'package:pow_note_ai/widgets/text_fields/custom_drop_down_field.dart';
 import '../enums/note_style.dart';
-import 'package:pow_note_ai/features/ai_improvement/repositories/ai_note_repository.dart';
+import 'package:pow_note_ai/core/ai_improvement/repositories/ai_note_repository.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 class NoteEnhancerScreen extends StatefulWidget {

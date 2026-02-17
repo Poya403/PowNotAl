@@ -4,6 +4,7 @@ import '../repositories/note_repository.dart';
 
 class NoteProvider with ChangeNotifier {
   final NoteRepository _repository = NoteRepository();
+
   List<Note> _notes = [];
   bool _isLoading = false;
 

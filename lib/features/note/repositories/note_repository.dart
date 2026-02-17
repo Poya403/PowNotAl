@@ -45,4 +45,9 @@ class NoteRepository{
     final database = await databaseHelper.database;
     await database.delete('notes', where: 'id = ?', whereArgs: [id]);
   }
+
+  Future<void> clearAllNotes() async {
+    final database = await databaseHelper.database;
+    await database.delete('notes');
+  }
 }

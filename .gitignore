@@ -59,3 +59,18 @@ Thumbs.db
 **/generated_plugin_registrant.cc
 **/generated_plugins_cmake
 **/GeneratedPluginRegistrant.swift
+
+# Flutter build outputs
+/build/
+*.apk
+*.aab
+
+# Generated plugins
+**/generated_plugins.cmake
+
+# Gradle files
+**/gradle.properties
+**/gradle-wrapper.properties
+**/build.gradle.kts
+**/settings.gradle
+
