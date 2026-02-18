@@ -54,77 +54,18 @@ class _BackUpScreenState extends State<BackUpScreen> {
                   for (var f in provider.backupFiles) f.id!: f.title ?? AppTexts.unknown
                 };
 
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
+                return Stack(
+                  alignment: Alignment.center,
                   children: [
-                    ElevatedButton.icon(
-                      icon: const Icon(Icons.backup),
-                      label: Text(AppTexts.backUp),
-                      onPressed: provider.isLoading
-                          ? null
-                          : () async {
-                        try {
-                          await provider.exportNotes();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('بکاپ با موفقیت انجام شد')),
-                          );
-                        } on Exception catch (e) {
-                          if(e.toString().contains('Sign in cancelled')){
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('ورود گوگل کنسل شد')),
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('خطا در بکاپ: $e')),
-                            );
-                          }
-                        }
-                        if (provider.backupFiles.isNotEmpty) {
-                          setState(() {
-                            selectedFileId = provider.backupFiles.last.id;
-                          });
-                        }
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    if (provider.backupFiles.isNotEmpty)
-                      CustomDropdownField(
-                        labelText: AppTexts.selectDriveFile,
-                        items: filesMap.values.toList(),
-                        value: selectedFileId != null
-                            ? filesMap[selectedFileId]
-                            : null,
-                        onChanged: (val) {
-                          final id = filesMap.entries
-                              .firstWhere((e) => e.value == val,
-                              orElse: () => filesMap.entries.first)
-                              .key;
-                          setState(() => selectedFileId = id);
-                        },
-                        onPressed: () {
-                          setState(() => selectedFileId = null);
-                        },
+                    Opacity(
+                      opacity: provider.isLoading ? 0.5 : 1,
+                      child: IgnorePointer(
+                        ignoring: provider.isLoading,
+                        child: _buildContent(provider, filesMap),
                       ),
-                    const SizedBox(height: 10),
-                    ElevatedButton.icon(
-                      icon: const Icon(Icons.restore),
-                      label: Text(AppTexts.restoreBackup),
-                      onPressed: (selectedFileId == null || provider.isLoading)
-                          ? null
-                          : () async {
-                        await provider.importNotes(selectedFileId!);
-                      },
-                    ),
-                    const SizedBox(height: 30),
-                    Text(
-                      provider.backupFiles.isEmpty
-                          ? AppTexts.noBackups
-                          : '${AppTexts.latestVersion}: ${provider.backupFiles.last.title ?? ''}',
-                      style: const TextStyle(color: Colors.grey),
                     ),
                     if (provider.isLoading)
-                      const Padding(
-                        padding: EdgeInsets.only(top: 16),
+                      const Center(
                         child: CircularProgressIndicator(),
                       ),
                   ],
@@ -134,6 +75,82 @@ class _BackUpScreenState extends State<BackUpScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildContent(BackUpProvider provider, Map<String, String> filesMap) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ElevatedButton.icon(
+          icon: const Icon(Icons.backup),
+          label: Text(AppTexts.backUp),
+          onPressed: provider.isLoading
+              ? null
+              : () async {
+            try {
+              await provider.exportNotes();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('بکاپ با موفقیت انجام شد')),
+              );
+            } catch (e) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('خطا: $e')),
+              );
+            }
+          },
+        ),
+        const SizedBox(height: 20),
+
+        if (provider.backupFiles.isNotEmpty)
+          CustomDropdownField(
+            labelText: AppTexts.selectDriveFile,
+            items: filesMap.values.toList(),
+            value: selectedFileId != null
+                ? filesMap[selectedFileId]
+                : null,
+            onChanged: (val) {
+              final id = filesMap.entries
+                  .firstWhere((e) => e.value == val,
+                  orElse: () => filesMap.entries.first)
+                  .key;
+              setState(() => selectedFileId = id);
+            },
+            onPressed: () {
+              setState(() => selectedFileId = null);
+            },
+          ),
+
+        const SizedBox(height: 10),
+
+        ElevatedButton.icon(
+          icon: const Icon(Icons.restore),
+          label: Text(AppTexts.restoreBackup),
+          onPressed: (selectedFileId == null || provider.isLoading)
+              ? null
+              : () async {
+                  try {
+                    await provider.importNotes(selectedFileId!);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('ریستور با موفقیت انجام شد')),
+                    );
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('خطا در ریستور: $e')),
+                    );
+                  }
+                },
+        ),
+
+        const SizedBox(height: 30),
+
+        Text(
+          provider.backupFiles.isEmpty
+              ? AppTexts.noBackups
+              : '${AppTexts.latestVersion}: ${provider.backupFiles.last.title ?? ''}',
+          style: const TextStyle(color: Colors.grey),
+        ),
+      ],
     );
   }
 }
