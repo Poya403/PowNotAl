@@ -98,12 +98,13 @@ class _NoteEnhancerScreenState extends State<NoteEnhancerScreen> {
                         Wrap(
                           crossAxisAlignment: WrapCrossAlignment.center,
                           textDirection: TextDirection.rtl,
-                          spacing: 15,
+                          spacing: 20,
                           children: [
                             ValueListenableBuilder(
                                 valueListenable: selectedFormNotifier,
                                 builder: (context, selectedForm, _) {
                                   return CustomDropdownField(
+                                    width: 90,
                                     labelText: AppTexts.form,
                                     items: NoteStyle.values
                                         .map((e) => e.title)
@@ -144,7 +145,7 @@ class _NoteEnhancerScreenState extends State<NoteEnhancerScreen> {
                                           ),
                                         ),
                                         style: ElevatedButton.styleFrom(
-                                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                                           backgroundColor: canPress
                                               ? Theme.of(context).primaryColor
                                               : Colors.grey[300],

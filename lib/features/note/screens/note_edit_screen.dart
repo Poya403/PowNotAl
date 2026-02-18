@@ -119,7 +119,9 @@ class _NoteEditScreenState extends State<NoteEditScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              _actionButtons(),
               AppSpacing.height20,
+              // title box
               CustomTextField(
                 controller: titleController,
                 labelText: AppTexts.title,
@@ -129,17 +131,19 @@ class _NoteEditScreenState extends State<NoteEditScreen> {
                     if (value.text.isEmpty) return const SizedBox.shrink();
                     return IconButton(
                       onPressed: () => titleController.clear(),
-                      icon: const Icon(Icons.cancel_outlined),
+                      icon: const Icon(Icons.clear),
                     );
                   },
                 ),
               ),
               AppSpacing.height20,
+              // Artificial Intelligence Development Department
               NoteEnhancerScreen(
                 titleController: titleController,
                 contentController: contentController,
               ),
               AppSpacing.height20,
+              //content box
               CustomTextField(
                 controller: contentController,
                 labelText: AppTexts.enterText,
@@ -152,14 +156,12 @@ class _NoteEditScreenState extends State<NoteEditScreen> {
                     if (value.text.isEmpty) return const SizedBox.shrink();
                     return IconButton(
                       onPressed: () => contentController.clear(),
-                      icon: const Icon(Icons.cancel_outlined),
+                      icon: const Icon(Icons.clear),
                     );
                   },
                 ),
               ),
-
-              AppSpacing.height30,
-              _buildEditButtons()
+              AppSpacing.height16,
             ],
           ),
         ),
@@ -167,33 +169,50 @@ class _NoteEditScreenState extends State<NoteEditScreen> {
     );
   }
 
-  Widget _buildEditButtons() {
-    final isDesktop = MediaQuery.of(context).size.width > 800;
+  Widget _actionButtons() {
+    bool isDesktop = MediaQuery.of(context).size.width > 800;
     return ValueListenableBuilder<int>(
       valueListenable: _updateNotifier,
       builder: (context, _, __) {
         final buttons = [
           CustomButton(
             title: AppTexts.save,
+            iconData: Icons.save_as_outlined,
             onPressed: canSave ? _saveNote : null,
-            enabled: canSave,
+            enabled: canSave
           ),
-          const SizedBox(width: 10, height: 10),
+          const SizedBox(width: 5, height: 5),
           if(editingNote != null)
             CustomButton(
               title: AppTexts.clearChanges,
+              iconData: Icons.clear,
               onPressed: isModified ? _resetChanges : null,
               enabled: isModified,
-              backgroundColor: Colors.redAccent,
+              color: Colors.redAccent
             ),
         ];
 
-        return isDesktop
-            ? Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: buttons,
-        )
-            : Column(children: buttons);
+        return SizedBox(
+          width: isDesktop
+              ? MediaQuery.of(context).size.width * 0.28
+              : MediaQuery.of(context).size.width * 0.9
+          ,
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: AppRadius.radius10,
+            ),
+            margin: EdgeInsets.all(10.0),
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+            child: Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: Row(
+                spacing: 5,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: buttons,
+              ),
+            ),
+          ),
+        );
       },
     );
   }
@@ -202,38 +221,36 @@ class _NoteEditScreenState extends State<NoteEditScreen> {
 
 class CustomButton extends StatelessWidget {
   final String title;
+  final IconData iconData;
   final bool enabled;
   final VoidCallback? onPressed;
-  final Color? backgroundColor;
+  final Color color;
 
   const CustomButton({
     super.key,
     required this.title,
+    required this.iconData,
     required this.onPressed,
-    this.backgroundColor,
+    this.color = Colors.deepPurpleAccent,
     this.enabled = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(10.0, 15.0, 0, 0),
-      child: Padding(
-        padding: const EdgeInsets.only(top: 8.0),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(borderRadius: AppRadius.radius6),
-            elevation: 3,
-            backgroundColor:
-                backgroundColor ?? Theme.of(context).colorScheme.primary,
-          ),
-          onPressed: enabled ? onPressed : null,
-          child: Text(
-            title,
-            style: Theme.of(
-              context,
-            ).textTheme.titleSmall?.copyWith(color: Theme.of(context).colorScheme.surface),
-          ),
+    return Tooltip(
+      message: title,
+      child: IconButton(
+        style: IconButton.styleFrom(
+          shape: const CircleBorder(),
+          padding: EdgeInsets.all(5.0),
+          foregroundColor: color,
+          disabledForegroundColor: Theme.of(context).colorScheme
+              .onSurface.withValues(alpha: 0.38),
+        ),
+        onPressed: enabled ? onPressed : null,
+        icon: Icon(
+          iconData,
+          size: 25,
         ),
       ),
     );

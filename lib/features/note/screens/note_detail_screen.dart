@@ -46,69 +46,66 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
         .size
         .width > 800;
 
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-              note!.title,
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-          centerTitle: true,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+            note!.title,
+          style: Theme.of(context).textTheme.titleSmall,
         ),
+        centerTitle: true,
+      ),
 
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CustomButton(
+              onPressed: () =>
+                  Navigator.pushNamed(
+                    context,
+                    '/note_edit',
+                    arguments: {'note': note},
+                  ),
+              title: AppTexts.editNote,
+              icon: Icons.edit_outlined,
+            ),
+            AppSpacing.width24,
+            CustomButton(
+              onPressed: () => ShareService.shareNote(note!),
+              title: AppTexts.share,
+              icon: Icons.share_outlined,
+            ),
+          ],
+        ),
+      ),
+
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.all(isDesktop ? 30.0 : 8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              CustomButton(
-                onPressed: () =>
-                    Navigator.pushNamed(
-                      context,
-                      '/note_edit',
-                      arguments: {'note': note},
-                    ),
-                title: AppTexts.editNote,
-                icon: Icons.edit_outlined,
-              ),
-              AppSpacing.width24,
-              CustomButton(
-                onPressed: () => ShareService.shareNote(note!),
-                title: AppTexts.share,
-                icon: Icons.share_outlined,
-              ),
-            ],
-          ),
-        ),
-
-        body: Center(
-          child: Padding(
-            padding: EdgeInsets.all(isDesktop ? 30.0 : 8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: Card(
-                    elevation: 3,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: AppRadius.radius16,
-                    ),
-                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: SingleChildScrollView(
-                        child: SelectableText(
-                          note!.content,
-                          style: isDesktop ? Theme.of(context).textTheme.bodyLarge : Theme.of(context).textTheme.bodyMedium,
-                          textDirection: TextDirection.rtl,
-                        ),
+              Expanded(
+                child: Card(
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: AppRadius.radius16,
+                  ),
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: SingleChildScrollView(
+                      child: SelectableText(
+                        note!.content,
+                        style: isDesktop ? Theme.of(context).textTheme.bodyLarge : Theme.of(context).textTheme.bodyMedium,
+                        textDirection: TextDirection.rtl,
                       ),
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

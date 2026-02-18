@@ -44,8 +44,7 @@ class _CustomPersianDateFieldState extends State<CustomPersianDateField> {
       lastDate: Jalali(1450, 12),
       helpText: widget.helpText,
       builder: (context, child) {
-        final theme = Theme.of(context);
-        final isDark = theme.brightness == Brightness.dark;
+        final baseTheme = Theme.of(context);
 
         return Localizations.override(
           context: context,
@@ -57,23 +56,22 @@ class _CustomPersianDateFieldState extends State<CustomPersianDateField> {
             PersianCupertinoLocalizations.delegate,
           ],
           child: Theme(
-            data: theme.copyWith(
-              colorScheme: isDark
-                  ? theme.colorScheme
-                  : ColorScheme.light(
-                primary: theme.primaryColor,
-                onPrimary: theme.primaryColor,
-                onSurface: theme.colorScheme.surface,
-              ),
-              textTheme: theme.textTheme.copyWith(
-                titleMedium: theme.textTheme.titleMedium?.copyWith(
+            data: baseTheme.copyWith(
+              textTheme: baseTheme.textTheme.copyWith(
+                titleMedium: baseTheme.textTheme.titleMedium?.copyWith(
                   fontSize: 16,
-                  color: theme.colorScheme.primary,
                   fontWeight: FontWeight.bold,
+                  color: baseTheme.colorScheme.onSurface,
                 ),
-                bodyMedium: theme.textTheme.bodyMedium?.copyWith(fontSize: 16),
-                labelLarge: theme.textTheme.labelLarge?.copyWith(fontSize: 16),
-              ),
+                bodyMedium: baseTheme.textTheme.bodyMedium?.copyWith(
+                  fontSize: 16,
+                  color: baseTheme.colorScheme.onSurface,
+                ),
+                labelLarge: baseTheme.textTheme.labelLarge?.copyWith(
+                  fontSize: 16,
+                  color: baseTheme.colorScheme.primary,
+                ),
+              ), dialogTheme: DialogThemeData(backgroundColor: baseTheme.colorScheme.surface),
             ),
             child: child!,
           ),
