@@ -161,12 +161,12 @@ class _NoteEnhancerScreenState extends State<NoteEnhancerScreen> {
                         ),
                         AppSpacing.height10,
                         Text(
-                            'Powered by AI',
+                            'Powered by Open router',
                             style: Theme
                                 .of(context)
                                 .textTheme
                                 .bodySmall
-                                ?.copyWith(color: Colors.blueGrey)
+                                ?.copyWith(color: Theme.of(context).colorScheme.onPrimary)
                         ),
                       ],
                     ),

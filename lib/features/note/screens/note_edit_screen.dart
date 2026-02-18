@@ -119,7 +119,7 @@ class _NoteEditScreenState extends State<NoteEditScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _actionButtons(),
+              if(editingNote != null) _actionButtons(),
               AppSpacing.height20,
               // title box
               CustomTextField(
@@ -162,6 +162,7 @@ class _NoteEditScreenState extends State<NoteEditScreen> {
                 ),
               ),
               AppSpacing.height16,
+              if(editingNote == null) _actionButtons(),
             ],
           ),
         ),
@@ -170,47 +171,62 @@ class _NoteEditScreenState extends State<NoteEditScreen> {
   }
 
   Widget _actionButtons() {
-    bool isDesktop = MediaQuery.of(context).size.width > 800;
     return ValueListenableBuilder<int>(
       valueListenable: _updateNotifier,
       builder: (context, _, __) {
         final buttons = [
-          CustomButton(
-            title: AppTexts.save,
-            iconData: editingNote != null
-                ? Icons.save_as_outlined : Icons.save_outlined,
-            onPressed: canSave ? _saveNote : null,
-            enabled: canSave
-          ),
-          const SizedBox(width: 5, height: 5),
-          if(editingNote != null)
+          if(editingNote != null)...[
             CustomButton(
-              title: AppTexts.clearChanges,
-              iconData: Icons.clear,
-              onPressed: isModified ? _resetChanges : null,
-              enabled: isModified,
-              color: Colors.redAccent
+                title: AppTexts.save,
+                iconData: Icons.save_as_outlined,
+                onPressed: canSave ? _saveNote : null,
+                enabled: canSave
             ),
+            const SizedBox(width: 5, height: 5),
+            CustomButton(
+                title: AppTexts.clearChanges,
+                iconData: Icons.clear,
+                onPressed: isModified ? _resetChanges : null,
+                enabled: isModified,
+                color: Colors.redAccent
+            ),
+          ] else...[
+            Directionality(
+              textDirection: TextDirection.rtl,
+              child: ElevatedButton.icon(
+                onPressed: canSave ? _saveNote : null,
+                style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: AppRadius.radius10
+                    ),
+                    backgroundColor: Theme.of(context).colorScheme.primary
+                ),
+                label: Text(
+                  AppTexts.save,
+                  style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+                ),
+                icon: Icon(
+                  Icons.save_outlined,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+              ),
+            )
+          ]
         ];
 
-        return SizedBox(
-          width: isDesktop
-              ? MediaQuery.of(context).size.width * 0.28
-              : MediaQuery.of(context).size.width * 0.9
-          ,
-          child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: AppRadius.radius10,
-            ),
-            margin: EdgeInsets.all(10.0),
-            color: Theme.of(context).colorScheme.surfaceContainerHighest,
-            child: Padding(
-              padding: const EdgeInsets.all(3.0),
-              child: Row(
-                spacing: 5,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: buttons,
-              ),
+        return Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: AppRadius.radius10,
+          ),
+          margin: EdgeInsets.all(10.0),
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          child: Padding(
+            padding: const EdgeInsets.all(3.0),
+            child: Row(
+              spacing: 5,
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: buttons,
             ),
           ),
         );

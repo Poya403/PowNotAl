@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
           ),
 
           textTheme: const TextTheme(
-            bodySmall: TextStyle(fontSize: 15),
+            bodySmall: TextStyle(fontSize: 13),
             bodyMedium: TextStyle(fontSize: 16),
             bodyLarge: TextStyle(fontSize: 18),
             titleSmall: TextStyle(fontSize: 20),
@@ -51,12 +51,10 @@ class MyApp extends StatelessWidget {
           colorScheme:  ColorScheme.dark(
             primary: Colors.deepPurpleAccent,
               secondary: Colors.deepPurpleAccent,
-              background: Colors.grey,
               surface: Color(0xFF1E1E1E),
               onPrimary: Colors.white,
               onSecondary: Colors.white,
               onSurface: Colors.white,
-              onBackground: Colors.white,
               surfaceContainerHighest: Colors.grey[800],
               error: Colors.redAccent,
               onError: Colors.white,
