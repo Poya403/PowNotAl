@@ -177,7 +177,8 @@ class _NoteEditScreenState extends State<NoteEditScreen> {
         final buttons = [
           CustomButton(
             title: AppTexts.save,
-            iconData: Icons.save_as_outlined,
+            iconData: editingNote != null
+                ? Icons.save_as_outlined : Icons.save_outlined,
             onPressed: canSave ? _saveNote : null,
             enabled: canSave
           ),
