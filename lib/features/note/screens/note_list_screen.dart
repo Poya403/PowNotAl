@@ -67,7 +67,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                           ),
                         )
                             : Icon(Icons.refresh,
-                            color: Theme.of(context).colorScheme.surface),
+                            color: Theme.of(context).colorScheme.onPrimary),
                       ),
                     ),
                   ],

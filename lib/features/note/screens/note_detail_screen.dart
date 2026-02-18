@@ -147,7 +147,7 @@ class CustomButton extends StatelessWidget {
             onPressed: enabled ? onPressed : null,
             child: Icon(
               icon,
-              color: Theme.of(context).colorScheme.surface,
+              color: Theme.of(context).colorScheme.onPrimary,
             )
           ),
         ),

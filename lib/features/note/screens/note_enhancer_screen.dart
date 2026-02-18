@@ -135,13 +135,13 @@ class _NoteEnhancerScreenState extends State<NoteEnhancerScreen> {
                                         icon: Icon(
                                           Icons.auto_fix_high_outlined,
                                           color: canPress
-                                              ? Theme.of(context).colorScheme.surface : Colors.grey[400],
+                                              ? Theme.of(context).colorScheme.onPrimary : Colors.grey[400],
                                         ),
                                         label: Text(
                                           AppTexts.developText,
                                           style: TextStyle(
                                               color: canPress
-                                                  ? Theme.of(context).colorScheme.surface : Colors.grey[400]
+                                                  ? Theme.of(context).colorScheme.onPrimary : Colors.grey[400]
                                           ),
                                         ),
                                         style: ElevatedButton.styleFrom(
